@@ -315,4 +315,14 @@ class Pato extends Animal implements Volador, Nadador {
 
 ## Apunte de clase
 
--Override -> sobrescribir 
+- Override -> sobrescribir 
+
+Super es lo mismo que this, difieren en cómo/ donde buscan el metodo
+- This -> busca en su clase
+- Super ->  busca en la clase de arriba de donde se encuentra. 
+
+- Super -> SOLO cuando quiero comportamiento heredado
+- Herencia no aplica a constructores ya que solo crean e inicializan
+
+
+
