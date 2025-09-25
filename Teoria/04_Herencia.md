@@ -312,3 +312,7 @@ class Pato extends Animal implements Volador, Nadador {
 4. **Las clases abstractas son útiles para comportamiento común**
 5. **Super solo debe usarse para extender, no reemplazar completamente**
 6. **La visibilidad debe manejarse cuidadosamente para mantener bajo acoplamiento**
+
+## Apunte de clase
+
+-Override -> sobrescribir 
