@@ -1,0 +1,8 @@
+# Ignorar todo por defecto
+*
+
+# Pero no ignores estos:
+!.gitignore
+!pom.xml
+!*/src/**
+!*.md
