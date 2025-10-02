@@ -312,3 +312,45 @@ class Pato extends Animal implements Volador, Nadador {
 4. **Las clases abstractas son útiles para comportamiento común**
 5. **Super solo debe usarse para extender, no reemplazar completamente**
 6. **La visibilidad debe manejarse cuidadosamente para mantener bajo acoplamiento**
+
+## Apunte de clase
+
+- Override -> sobrescribir 
+
+Super es lo mismo que this, difieren en cómo/ donde buscan el metodo
+- This -> busca en su clase
+- Super ->  busca en la clase de arriba de donde se encuentra. 
+
+- Super -> SOLO cuando quiero comportamiento heredado
+- Herencia no aplica a constructores ya que solo crean e inicializan
+
+Clase abstracta -> clases especializadas -> captura comportamiento y estructura común a otras clases (no tienen instancia)
+Generealizar -> Introducir súper clase que abstrae aspectos comunes a otras
+
+*Uso herencia*:
+- Subclasificar para especializar 
+- Herencia para especificar 
+- Subclasificar para extender
+
+Tipos: conjunto de firmas de op/métodos 
+-> cada clase e intefaz es un tipo
+-> tipo de variable
+-> tipo de un método (lo que retorna)
+-> tipo de un constructor (new "tipo")
+
+Ej:
+
+Class2 obj3 = new Class3 (); -> Compila porque Class3 es Subclase de Class2 (Funciona, debe estar a la par o ser subclase)
+obj3.mensajeAzul();  -> Aca ejecuta método de Class3 (va a su clase a buscar el método, es la declarada en new)
+
+# Interfaces NO son clases, son tipos
+
+Publico -> hay acoplamiento
+Portegido -> 
+Privado -> no hay acoplamiento
+
+Ocultamiento info -> favorece acoplamiento, incluso en herencia
+
+Estrategia que vamos a usar:
+- TODAS var de instancia son privadas
+- Si es subclase agrego accesors -> get/set

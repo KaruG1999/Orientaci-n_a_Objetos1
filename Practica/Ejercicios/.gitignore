@@ -1,0 +1,17 @@
+# Ignorar todo en la raíz
+/*
+
+# Pero no ignores las carpetas de primer nivel (para poder incluir su contenido)
+!/*/
+
+# Mantener este .gitignore y el pom.xml raíz y el README
+!/.gitignore
+!/pom.xml
+!/README.md
+
+# Mantener cualquier .md en cualquier subcarpeta
+!**/*.md
+
+# Mantener cualquier carpeta src dentro de las carpetas de primer nivel
+!/*/src/
+!/*/src/**

@@ -118,3 +118,7 @@ Mide qué tan completos son nuestros tests:
 
 ## 💡 Recordatorio Important
 Al testear en OO (Orientación a Objetos), nos enfocamos en que **cada objeto haga lo que se espera, como se espera**. Los tests nos ayudan a entender mejor qué se espera de nuestros objetos y garantizar su correcto funcionamiento.
+
+
+## Apunte de clase 
+
