@@ -115,6 +115,42 @@ Céntrese en aquellas asociaciones para las que se necesita **conservar el conoc
 | A es una transacción relacionada con otra transacción B | Pago - Compra |
 | A es dueño de B | Cliente - Carrito |
 
+### Multiplicidades
+
+Indican cuántos objetos pueden participar en cada extremo de la relación:
+
+| Notación | Significado |
+|----------|-------------|
+| `1` | exactamente uno |
+| `0..1` | cero o uno (relación opcional) |
+| `*` o `0..*` | cero o muchos |
+| `1..*` | uno o muchos (al menos uno) |
+| `2..5` | entre dos y cinco |
+
+Ejemplo: Un Pedido tiene entre 1 y muchos Items; un Item pertenece a exactamente un Pedido.
+
+```
+Pedido ──── 1..* ────→ ItemPedido
+  1
+```
+
+### Navegabilidad
+
+La **navegabilidad** indica quién conoce a quién. Una flecha `→` de A a B significa que A tiene referencia a B, pero B no necesariamente conoce a A.
+
+```
+Cliente ────────────────→ Compra
+              realiza
+              0..*
+
+// Esto indica:
+// - Un Cliente puede tener 0 o muchas Compras
+// - Cliente conoce a sus Compras (tiene la colección)
+// - Compra NO necesariamente conoce a su Cliente
+```
+
+Si la navegación es bidireccional, se puede omitir la flecha o poner flechas en ambos sentidos.
+
 ### Consejos para asociaciones:
 - Es más importante identificar clases conceptuales que identificar asociaciones
 - Demasiadas asociaciones tienden a confundir el modelo

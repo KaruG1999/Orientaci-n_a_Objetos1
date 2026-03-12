@@ -1,0 +1,14 @@
+# Maven
+target/
+*.class
+
+# VSCode
+.vscode/settings.json
+
+# Logs
+*.log
+
+# Archivos de IDE Eclipse (no usar en este repo)
+.classpath
+.project
+.settings/

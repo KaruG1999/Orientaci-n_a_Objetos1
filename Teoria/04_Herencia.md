@@ -53,15 +53,87 @@ Este principio es más preciso que la intuición "es-un" y nos ayuda a verificar
 
 ## Method Lookup con Herencia
 
+Cuando un objeto recibe un mensaje, la búsqueda del método sigue un orden preciso:
+
 ### Proceso de búsqueda:
-1. Cuando un objeto recibe un mensaje, se busca el método en su clase
-2. Si no lo encuentra, busca en la superclase
-3. Continúa hacia arriba en la jerarquía hasta encontrarlo
+1. Se busca el método en **la clase del objeto** (la declarada en `new`)
+2. Si no se encuentra, se sube a la superclase
+3. Se continúa hacia arriba hasta encontrarlo o llegar a `Object`
+4. Si no se encuentra en ningún lado → error en tiempo de ejecución
 
 ```java
 CuentaCorriente cuenta = new CuentaCorriente();
-cuenta.extraer(100); // Busca primero en CuentaCorriente, luego en CuentaBancaria
+cuenta.extraer(100);
+// Java busca extraer() en CuentaCorriente → lo encuentra → lo ejecuta
+
+CuentaBancaria cuenta2 = new CuentaCorriente();
+cuenta2.depositar(500);
+// Java busca depositar() en CuentaCorriente → no está → sube a CuentaBancaria → lo ejecuta
 ```
+
+### El tipo de la variable NO determina qué método se ejecuta
+
+Esto es fundamental: el tipo de la variable sirve para el **chequeo del compilador** (¿puedo enviar este mensaje?), pero en tiempo de ejecución lo que importa es el **tipo real del objeto**.
+
+```java
+CuentaBancaria ref = new CuentaCorriente(); // variable tipo CuentaBancaria
+ref.extraer(100);
+// ¿Qué extraer() se ejecuta? → el de CuentaCorriente (el objeto real)
+// Aunque la variable sea de tipo CuentaBancaria
+```
+
+> Esto es exactamente el **binding dinámico**: el método se resuelve en tiempo de ejecución según el objeto, no según la variable.
+
+### `this` en el contexto de herencia
+
+`this` siempre apunta al **objeto que recibió el mensaje original**, sin importar en qué clase se está ejecutando el código.
+
+```java
+public class CuentaBancaria {
+    private double saldo;
+
+    public void depositar(double monto) {
+        this.saldo += monto;           // this es el objeto real
+        this.notificar();              // busca notificar() desde el objeto real (binding dinámico)
+    }
+
+    public void notificar() {
+        System.out.println("Depósito en cuenta base");
+    }
+}
+
+public class CuentaCorriente extends CuentaBancaria {
+    @Override
+    public void notificar() {
+        System.out.println("Depósito en cuenta corriente");
+    }
+}
+
+// Uso:
+CuentaBancaria c = new CuentaCorriente();
+c.depositar(100);
+// Ejecuta depositar() de CuentaBancaria (no redefinido en CuentaCorriente)
+// Dentro, this.notificar() → busca desde CuentaCorriente → ejecuta el de CuentaCorriente
+// Output: "Depósito en cuenta corriente"
+```
+
+### `super` en el contexto de herencia
+
+`super` no apunta al tipo de la variable ni a la superclase del objeto — apunta a la **superclase de la clase donde está escrito el código**.
+
+```java
+public class CuentaCorriente extends CuentaBancaria {
+    @Override
+    public void extraer(double monto) {
+        super.extraer(monto);   // busca extraer() en CuentaBancaria (superclase de CuentaCorriente)
+        // acá puede agregar comportamiento extra
+        this.cobrarComision();
+    }
+}
+```
+
+> **Regla de oro:** `this.metodo()` → empieza desde el objeto real (va hacia abajo).
+> `super.metodo()` → empieza desde la superclase del código actual (va hacia arriba desde acá).
 
 ## Override y Super
 
@@ -102,24 +174,36 @@ class CuentaCorriente extends CuentaBancaria {
 ```
 
 ### Super en constructores
+
+Los constructores **no se heredan**: cada clase define los suyos. Sin embargo, al construir un objeto de una subclase, la superclase también necesita inicializarse. Para eso se usa `super(...)` como primera instrucción del constructor.
+
 ```java
 class CuentaBancaria {
-    protected double saldo;
-    
+    private double saldo;
+
     public CuentaBancaria(double saldoInicial) {
         this.saldo = saldoInicial;
     }
+
+    protected double getSaldo() { return this.saldo; }
+    protected void setSaldo(double s) { this.saldo = s; }
 }
 
 class CuentaCorriente extends CuentaBancaria {
     private double descubiertoPermitido;
-    
+
     public CuentaCorriente(double saldoInicial, double descubierto) {
-        super(saldoInicial); // Debe ser la primera línea
+        super(saldoInicial);                   // ← debe ser la PRIMERA línea
         this.descubiertoPermitido = descubierto;
     }
 }
 ```
+
+**Reglas importantes:**
+- `super(...)` debe ser la **primera instrucción** del constructor de la subclase
+- Si no se escribe explícitamente, Java llama automáticamente a `super()` (sin argumentos)
+- Si la superclase no tiene constructor sin argumentos, la subclase **debe** llamar explícitamente a `super(...)` con los parámetros correctos
+- Los constructores no son métodos: no se heredan, no se sobreescriben, no aparecen en el method lookup normal
 
 ## Clases Abstractas
 
@@ -156,6 +240,122 @@ class Circulo extends Forma {
     }
 }
 ```
+
+## Patrón Template Method (Método Plantilla)
+
+Una de las aplicaciones más importantes de las clases abstractas es el **Template Method**: una superclase define el "esqueleto" de un algoritmo en un método concreto, y delega los pasos variables a métodos abstractos que las subclases implementan.
+
+### Concepto
+
+La superclase dice: *"Sé cómo hacer esto en general, pero hay pasos que dependen del tipo específico. Vos (subclase) decidís cómo hacer esos pasos."*
+
+```
+Superclase (concreta)              Subclases (concretan los pasos)
+─────────────────────              ──────────────────────────────
+metodoPlantilla() {           →    puedeHacerlo()  → cada subclase lo define
+  if (puedeHacerlo()) {            costoAdicional()→ cada subclase lo define
+    hacerlo();
+    aplicarCosto();
+  }
+}
+abstract puedeHacerlo()
+abstract costoAdicional()
+```
+
+### Ejemplo: Cuentas con diferentes políticas de extracción
+
+```java
+public abstract class Cuenta {
+    protected double saldo;
+
+    // MÉTODO PLANTILLA: define el esqueleto del algoritmo (concreto)
+    public boolean extraer(double monto) {
+        if (this.puedeExtraer(monto)) {
+            this.saldo -= monto;
+            this.saldo -= this.comision(monto);  // cada cuenta tiene su comisión
+            return true;
+        }
+        return false;
+    }
+
+    // GANCHO 1: paso variable → cada subclase define su política
+    protected abstract boolean puedeExtraer(double monto);
+
+    // GANCHO 2: paso variable → cada subclase define su comisión
+    protected abstract double comision(double monto);
+
+    // Comportamiento común (concreto, compartido por todas)
+    public void depositar(double monto) {
+        this.saldo += monto;
+    }
+
+    public double getSaldo() {
+        return this.saldo;
+    }
+}
+
+public class CajaDeAhorro extends Cuenta {
+    @Override
+    protected boolean puedeExtraer(double monto) {
+        return this.saldo >= monto;   // no puede quedar en negativo
+    }
+
+    @Override
+    protected double comision(double monto) {
+        return 0;                     // sin comisión
+    }
+}
+
+public class CuentaCorriente extends Cuenta {
+    private double descubierto;
+
+    public CuentaCorriente(double saldoInicial, double descubierto) {
+        super(saldoInicial);
+        this.descubierto = descubierto;
+    }
+
+    @Override
+    protected boolean puedeExtraer(double monto) {
+        return this.saldo + this.descubierto >= monto;  // puede ir en negativo
+    }
+
+    @Override
+    protected double comision(double monto) {
+        return monto * 0.01;          // 1% de comisión
+    }
+}
+```
+
+### Lo que logra el patrón:
+
+- El método `extraer()` está **escrito una sola vez** en la superclase
+- Si cambia la lógica general de extracción, se cambia **en un solo lugar**
+- Cada subclase solo implementa **su parte específica**
+- Se evita la duplicación del algoritmo completo en cada subclase
+
+### Diferencia con Override simple
+
+| Override simple | Template Method |
+|----------------|-----------------|
+| La subclase **reemplaza** el método completo | La subclase **rellena huecos** del algoritmo |
+| `super` es opcional | Los métodos abstractos son **obligatorios** |
+| La lógica completa está en la subclase | La lógica general está en la superclase |
+
+```java
+// Override simple: CuentaCorriente reimplementa extraer() completo
+@Override
+public boolean extraer(double monto) {
+    // reimplementa toda la lógica desde cero
+}
+
+// Template Method: CuentaCorriente solo define el criterio de autorización
+@Override
+protected boolean puedeExtraer(double monto) {
+    return this.saldo + this.descubierto >= monto;
+}
+```
+
+---
 
 ## Situaciones de Uso de Herencia
 
@@ -313,44 +513,56 @@ class Pato extends Animal implements Volador, Nadador {
 5. **Super solo debe usarse para extender, no reemplazar completamente**
 6. **La visibilidad debe manejarse cuidadosamente para mantener bajo acoplamiento**
 
-## Apunte de clase
+## Tipos y herencia — resumen
 
-- Override -> sobrescribir 
+**Un tipo** es un conjunto de firmas de operaciones/métodos. En Java, cada clase e interfaz define un tipo.
 
-Super es lo mismo que this, difieren en cómo/ donde buscan el metodo
-- This -> busca en su clase
-- Super ->  busca en la clase de arriba de donde se encuentra. 
+- El tipo de una **variable** determina qué mensajes puede recibir
+- El tipo de un **método** es lo que retorna
+- El tipo en `new Clase()` es la clase que se instancia
 
-- Super -> SOLO cuando quiero comportamiento heredado
-- Herencia no aplica a constructores ya que solo crean e inicializan
+```java
+// La variable tiene tipo CuentaBancaria
+// El objeto tiene tipo CuentaCorriente
+CuentaBancaria ref = new CuentaCorriente();
+//     ↑ tipo para el compilador        ↑ tipo real en ejecución
 
-Clase abstracta -> clases especializadas -> captura comportamiento y estructura común a otras clases (no tienen instancia)
-Generealizar -> Introducir súper clase que abstrae aspectos comunes a otras
+ref.extraer(100);
+// El compilador verifica: ¿CuentaBancaria tiene extraer()? → sí, compila
+// En ejecución: ¿de qué clase es el objeto? → CuentaCorriente → ejecuta extraer() de CuentaCorriente
+```
 
-*Uso herencia*:
-- Subclasificar para especializar 
-- Herencia para especificar 
-- Subclasificar para extender
+> Las **interfaces NO son clases**: no tienen instancias propias, solo definen tipos.
 
-Tipos: conjunto de firmas de op/métodos 
--> cada clase e intefaz es un tipo
--> tipo de variable
--> tipo de un método (lo que retorna)
--> tipo de un constructor (new "tipo")
+### Visibilidad y herencia
 
-Ej:
+- `private` → solo visible en la clase que lo declara. Las subclases no lo ven directamente.
+- `protected` → visible en la clase y en todas sus subclases.
+- `public` → visible en todas partes.
 
-Class2 obj3 = new Class3 (); -> Compila porque Class3 es Subclase de Class2 (Funciona, debe estar a la par o ser subclase)
-obj3.mensajeAzul();  -> Aca ejecuta método de Class3 (va a su clase a buscar el método, es la declarada en new)
+**Estrategia recomendada en esta materia:**
+- Todas las variables de instancia: **privadas**
+- Si una subclase necesita acceder: agregar **getters/setters protegidos** en la superclase
 
-# Interfaces NO son clases, son tipos
+```java
+public class Cuenta {
+    private double saldo;               // privado
 
-Publico -> hay acoplamiento
-Portegido -> 
-Privado -> no hay acoplamiento
+    protected double getSaldo() {       // accesible por subclases
+        return this.saldo;
+    }
 
-Ocultamiento info -> favorece acoplamiento, incluso en herencia
+    protected void setSaldo(double s) { // accesible por subclases
+        this.saldo = s;
+    }
+}
 
-Estrategia que vamos a usar:
-- TODAS var de instancia son privadas
-- Si es subclase agrego accesors -> get/set
+public class CuentaCorriente extends Cuenta {
+    public void aplicarInteres() {
+        // this.saldo = ...;            // ❌ no compila, saldo es privado
+        this.setSaldo(this.getSaldo() * 1.01);   // ✅ usa el accessor
+    }
+}
+```
+
+> **Nota:** El ocultamiento de información se mantiene incluso en herencia. Una subclase hereda el comportamiento pero no el acceso directo a lo privado.

@@ -153,6 +153,48 @@ Es una medida de qué tan relacionadas están las responsabilidades de un objeto
 
 ---
 
+### 5. 🚶 No hables con extraños (Law of Demeter)
+
+**Principio:** Un objeto solo debería enviar mensajes a objetos que conoce directamente. Evitar "cadenas" de navegación para llegar a objetos lejanos.
+
+**Dentro de un método, solo se puede enviar mensajes a:**
+- `this` (el propio objeto)
+- Un parámetro del método
+- Un objeto creado dentro del método
+- Un atributo directo del objeto
+
+```java
+// ❌ MAL: Librería habla con Pago (un "extraño" — no lo conoce directamente)
+public class Libreria {
+    public void procesarCompra(Compra compra) {
+        double monto = compra.getPago().getMontoEntregado();  // cadena larga
+        // Libreria conoce Compra, pero no debería conocer Pago
+    }
+}
+
+// ✅ BIEN: Librería solo habla con Compra (su conocido directo)
+public class Libreria {
+    public void procesarCompra(Compra compra) {
+        double monto = compra.getMontoEntregado();  // Compra delega internamente
+    }
+}
+
+public class Compra {
+    private Pago pago;
+
+    public double getMontoEntregado() {
+        return this.pago.getMontoEntregado();  // Compra sí conoce a Pago
+    }
+}
+```
+
+**¿Por qué importa?**
+- Reduce acoplamiento: si cambia la estructura interna de `Compra`, `Libreria` no se ve afectada
+- Concentra el conocimiento de la estructura donde corresponde
+- Complementa el principio del Experto: si tenés que navegar lejos para obtener datos, quizás la responsabilidad está mal asignada
+
+---
+
 ## 🔄 Del Análisis al Diseño
 
 ### Flujo del Proceso

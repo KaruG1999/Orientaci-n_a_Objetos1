@@ -166,6 +166,30 @@ Todas las instancias de una misma clase:
 - Tienen la misma estructura interna (mismas variables de instancia)
 - Responden al mismo protocolo de la misma manera
 
+#### Constructores
+
+Un **constructor** es un método especial que se ejecuta al crear un objeto. Su responsabilidad es **inicializar el estado** del objeto recién creado.
+
+```java
+public class Persona {
+    private String nombre;
+    private int edad;
+
+    // Constructor: mismo nombre que la clase, sin tipo de retorno
+    public Persona(String nombre, int edad) {
+        this.nombre = nombre;
+        this.edad = edad;
+    }
+}
+
+// Uso: new invoca el constructor automáticamente
+Persona p = new Persona("Ana", 30);
+```
+
+- Si no se define un constructor, Java provee uno vacío por defecto
+- Una clase puede tener **múltiples constructores** con distintos parámetros (sobrecarga)
+- El constructor inicializa las variables de instancia; si no se inicializan, quedan en su valor por defecto (`null`, `0`, `false`)
+
 #### Identidad vs Igualdad
 
 - **Identidad**: Para saber si dos variables apuntan al mismo objeto (`==`)
