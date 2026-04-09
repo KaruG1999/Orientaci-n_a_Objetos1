@@ -6,30 +6,32 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BaseTest {
 
-    // TODO: declarar variables de fixture aquí
+    private Base integral;
+    private Base tradicional;
 
     @BeforeEach
     void setUp() {
-        // TODO: inicializar objetos antes de cada test
+        integral    = new Base("arroz", 2, true);
+        tradicional = new Base("arroz", 2, false);
     }
 
     @Test
     void descripcionBaseIntegral() {
-        // TODO
+        assertEquals("Base de arroz (integral, 2 porciones)", integral.getDescripcion());
     }
 
     @Test
     void descripcionBaseTradicional() {
-        // TODO
+        assertEquals("Base de arroz (tradicional, 2 porciones)", tradicional.getDescripcion());
     }
 
     @Test
     void costoBaseIntegral() {
-        // TODO
+        assertEquals(2200.0, integral.getCostoEstimado());
     }
 
     @Test
     void costoBaseTradicional() {
-        // TODO
+        assertEquals(1500.0, tradicional.getCostoEstimado());
     }
 }
