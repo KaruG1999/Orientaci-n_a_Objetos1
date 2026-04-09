@@ -6,20 +6,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ProteinaTest {
 
-    // TODO: declarar variables de fixture aquí
+    private Proteina proteina;
 
     @BeforeEach
     void setUp() {
-        // TODO: inicializar objetos antes de cada test
+        proteina = new Proteina("pollo", "cubos", 2, 2200.0);
     }
 
     @Test
     void descripcionProteina() {
-        // TODO
+        assertEquals("Proteína de pollo en cubos (2 porciones a $2200 por porción)", proteina.getDescripcion());
     }
 
     @Test
     void costoProteina() {
-        // TODO
+        assertEquals(4400.0, proteina.getCostoEstimado());
     }
 }

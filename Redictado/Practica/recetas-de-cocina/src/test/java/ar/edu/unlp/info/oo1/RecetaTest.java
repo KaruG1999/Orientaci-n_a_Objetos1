@@ -6,35 +6,49 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RecetaTest {
 
-    // TODO: declarar variables de fixture aquí
+    private Receta recetaVacia;
+    private Receta recetaCompleta;
 
     @BeforeEach
     void setUp() {
-        // TODO: inicializar objetos antes de cada test
+        recetaVacia = new Receta("Bowl tibio de pollo");
+
+        recetaCompleta = new Receta("Bowl tibio de pollo");
+        recetaCompleta.agregarComponente(new Base("arroz", 2, true));
+        recetaCompleta.agregarComponente(new Condimento("mix provenzal", 3, false));
+        recetaCompleta.agregarComponente(new Proteina("pollo", "cubos", 2, 2200.0));
     }
 
     @Test
     void descripcionRecetaSinComponentes() {
-        // TODO
+        assertEquals("Receta \"Bowl tibio de pollo\"", recetaVacia.getDescripcion());
     }
 
     @Test
     void descripcionRecetaConComponentes() {
-        // TODO
+        String esperado = "Receta \"Bowl tibio de pollo\"\n" +
+                          "1. Base de arroz (integral, 2 porciones)\n" +
+                          "2. Condimento mix provenzal (no picante, 3 cucharaditas)\n" +
+                          "3. Proteína de pollo en cubos (2 porciones a $2200 por porción)";
+        assertEquals(esperado, recetaCompleta.getDescripcion());
     }
 
     @Test
     void costoRecetaSinComponentes() {
-        // TODO
+        assertEquals(0.0, recetaVacia.getCostoEstimado());
     }
 
     @Test
     void costoRecetaSoloCondimentos() {
-        // TODO
+        Receta receta = new Receta("Solo condimentos");
+        receta.agregarComponente(new Condimento("sal", 1, false));
+        receta.agregarComponente(new Condimento("pimienta", 1, false));
+        assertEquals(0.0, receta.getCostoEstimado());
     }
 
     @Test
     void costoRecetaConTodosLosTipos() {
-        // TODO
+        // Base integral $2200 + condimento $0 + proteína 2 * $2200 = $6600
+        assertEquals(6600.0, recetaCompleta.getCostoEstimado());
     }
 }

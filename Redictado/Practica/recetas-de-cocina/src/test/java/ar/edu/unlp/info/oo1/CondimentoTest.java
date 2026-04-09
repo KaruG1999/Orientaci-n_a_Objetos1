@@ -6,25 +6,27 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CondimentoTest {
 
-    // TODO: declarar variables de fixture aquí
+    private Condimento picante;
+    private Condimento noPicante;
 
     @BeforeEach
     void setUp() {
-        // TODO: inicializar objetos antes de cada test
+        picante   = new Condimento("mix provenzal", 3, true);
+        noPicante = new Condimento("mix provenzal", 3, false);
     }
 
     @Test
     void descripcionCondimentoPicante() {
-        // TODO
+        assertEquals("Condimento mix provenzal (picante, 3 cucharaditas)", picante.getDescripcion());
     }
 
     @Test
     void descripcionCondimentoNoPicante() {
-        // TODO
+        assertEquals("Condimento mix provenzal (no picante, 3 cucharaditas)", noPicante.getDescripcion());
     }
 
     @Test
     void costoCondimentoEsCero() {
-        // TODO
+        assertEquals(0.0, noPicante.getCostoEstimado());
     }
 }
