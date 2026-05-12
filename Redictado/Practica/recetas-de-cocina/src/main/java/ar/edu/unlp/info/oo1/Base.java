@@ -1,25 +1,20 @@
 package ar.edu.unlp.info.oo1;
 
-public class Base extends Componente {
+public abstract class Base implements Componente {
 
     private String tipoBase;
     private int cantidadPorciones;
-    private boolean esIntegral;
 
-    public Base(String tipoBase, int cantidadPorciones, boolean esIntegral) {
+    public Base(String tipoBase, int cantidadPorciones) {
         this.tipoBase = tipoBase;
         this.cantidadPorciones = cantidadPorciones;
-        this.esIntegral = esIntegral;
     }
 
-    @Override
-    public String getDescripcion() {
-        String tipo = esIntegral ? "integral" : "tradicional";
-        return "Base de " + tipoBase + " (" + tipo + ", " + cantidadPorciones + " porciones)";
+    public String getTipoBase() {
+        return tipoBase;
     }
 
-    @Override
-    public double getCostoEstimado() {
-        return esIntegral ? 2200.0 : 1500.0;
+    public int getCantidadPorciones() {
+        return cantidadPorciones;
     }
 }

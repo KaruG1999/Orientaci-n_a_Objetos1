@@ -1,6 +1,6 @@
 package ar.edu.unlp.info.oo1;
 
-public class Proteina extends Componente {
+public class Proteina implements Componente {
 
     private String tipoProteina;
     private String formaPresentacion;

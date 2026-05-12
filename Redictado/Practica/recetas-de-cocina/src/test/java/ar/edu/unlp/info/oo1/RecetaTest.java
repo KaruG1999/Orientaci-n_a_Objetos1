@@ -14,8 +14,8 @@ class RecetaTest {
         recetaVacia = new Receta("Bowl tibio de pollo");
 
         recetaCompleta = new Receta("Bowl tibio de pollo");
-        recetaCompleta.agregarComponente(new Base("arroz", 2, true));
-        recetaCompleta.agregarComponente(new Condimento("mix provenzal", 3, false));
+        recetaCompleta.agregarComponente(new BaseIntegral("arroz", 2));
+        recetaCompleta.agregarComponente(new CondimentoNoPicante("mix provenzal", 3));
         recetaCompleta.agregarComponente(new Proteina("pollo", "cubos", 2, 2200.0));
     }
 
@@ -41,14 +41,14 @@ class RecetaTest {
     @Test
     void costoRecetaSoloCondimentos() {
         Receta receta = new Receta("Solo condimentos");
-        receta.agregarComponente(new Condimento("sal", 1, false));
-        receta.agregarComponente(new Condimento("pimienta", 1, false));
+        receta.agregarComponente(new CondimentoNoPicante("sal", 1));
+        receta.agregarComponente(new CondimentoNoPicante("pimienta", 1));
         assertEquals(0.0, receta.getCostoEstimado());
     }
 
     @Test
     void costoRecetaConTodosLosTipos() {
-        // Base integral $2200 + condimento $0 + proteína 2 * $2200 = $6600
+        // BaseIntegral $2200 + condimento $0 + proteína 2 * $2200 = $6600
         assertEquals(6600.0, recetaCompleta.getCostoEstimado());
     }
 }

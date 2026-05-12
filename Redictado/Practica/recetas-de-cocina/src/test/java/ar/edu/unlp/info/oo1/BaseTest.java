@@ -6,13 +6,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BaseTest {
 
-    private Base integral;
-    private Base tradicional;
+    private BaseIntegral integral;
+    private BaseTradicional tradicional;
 
     @BeforeEach
     void setUp() {
-        integral    = new Base("arroz", 2, true);
-        tradicional = new Base("arroz", 2, false);
+        integral    = new BaseIntegral("arroz", 2);
+        tradicional = new BaseTradicional("arroz", 2);
     }
 
     @Test

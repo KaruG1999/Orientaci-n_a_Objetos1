@@ -1,8 +1,8 @@
 package ar.edu.unlp.info.oo1;
 
-public abstract class Componente {
+public interface Componente {
 
-    public abstract String getDescripcion();
+    String getDescripcion();
 
-    public abstract double getCostoEstimado();
+    double getCostoEstimado();
 }

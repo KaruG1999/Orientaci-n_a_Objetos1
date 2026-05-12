@@ -1,21 +1,21 @@
 package ar.edu.unlp.info.oo1;
 
-public class Condimento extends Componente {
+public abstract class Condimento implements Componente {
 
     private String mezcla;
     private int cantidadCucharaditas;
-    private boolean esPicante;
 
-    public Condimento(String mezcla, int cantidadCucharaditas, boolean esPicante) {
+    public Condimento(String mezcla, int cantidadCucharaditas) {
         this.mezcla = mezcla;
         this.cantidadCucharaditas = cantidadCucharaditas;
-        this.esPicante = esPicante;
     }
 
-    @Override
-    public String getDescripcion() {
-        String picante = esPicante ? "picante" : "no picante";
-        return "Condimento " + mezcla + " (" + picante + ", " + cantidadCucharaditas + " cucharaditas)";
+    public String getMezcla() {
+        return mezcla;
+    }
+
+    public int getCantidadCucharaditas() {
+        return cantidadCucharaditas;
     }
 
     @Override

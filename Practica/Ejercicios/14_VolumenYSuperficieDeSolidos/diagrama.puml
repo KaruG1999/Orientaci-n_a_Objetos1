@@ -1,0 +1,69 @@
+@startuml Ejercicio14_VolumenYSuperficieDeSolidos
+
+skinparam classAttributeIconSize 0
+skinparam classFontStyle Bold
+
+abstract class Pieza {
+    - material : String
+    - color : String
+    + Pieza(material: String, color: String)
+    + getMaterial() : String
+    + getColor() : String
+    + {abstract} getVolumen() : double
+    + {abstract} getSuperficieExterior() : double
+}
+
+class Cilindro {
+    - radio : double
+    - altura : double
+    + Cilindro(material, color, radio, altura)
+    + getVolumen() : double
+    + getSuperficieExterior() : double
+}
+
+class Esfera {
+    - radio : double
+    + Esfera(material, color, radio)
+    + getVolumen() : double
+    + getSuperficieExterior() : double
+}
+
+class PrismaRectangular {
+    - ladoMayor : double
+    - ladoMenor : double
+    - altura : double
+    + PrismaRectangular(material, color, ladoMayor, ladoMenor, altura)
+    + getVolumen() : double
+    + getSuperficieExterior() : double
+}
+
+class ReporteDeConstruccion {
+    - piezas : List<Pieza>
+    + ReporteDeConstruccion()
+    + agregarPieza(pieza: Pieza) : void
+    + volumenDeMaterial(material: String) : double
+    + superficieDeColor(color: String) : double
+}
+
+Pieza <|-- Cilindro
+Pieza <|-- Esfera
+Pieza <|-- PrismaRectangular
+
+ReporteDeConstruccion "1" o-- "0..*" Pieza : piezas
+
+note right of Cilindro
+  Volumen = π * r² * h
+  Superficie = 2πr*h + 2πr²
+end note
+
+note right of Esfera
+  Volumen = (4/3) * π * r³
+  Superficie = 4 * π * r²
+end note
+
+note right of PrismaRectangular
+  Volumen = lM * lm * h
+  Superficie = 2*(lM*lm + lM*h + lm*h)
+end note
+
+@enduml

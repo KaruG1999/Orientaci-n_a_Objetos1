@@ -6,8 +6,8 @@ public class Main {
         // Ejemplo: "Bowl tibio de pollo"
         Receta bowl = new Receta("Bowl tibio de pollo");
 
-        bowl.agregarComponente(new Base("arroz", 2, true));
-        bowl.agregarComponente(new Condimento("mix provenzal", 3, false));
+        bowl.agregarComponente(new BaseIntegral("arroz", 2));
+        bowl.agregarComponente(new CondimentoNoPicante("mix provenzal", 3));
         bowl.agregarComponente(new Proteina("pollo", "cubos", 2, 2200.0));
 
         System.out.println(bowl.getDescripcion());

@@ -6,13 +6,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CondimentoTest {
 
-    private Condimento picante;
-    private Condimento noPicante;
+    private CondimentoPicante picante;
+    private CondimentoNoPicante noPicante;
 
     @BeforeEach
     void setUp() {
-        picante   = new Condimento("mix provenzal", 3, true);
-        noPicante = new Condimento("mix provenzal", 3, false);
+        picante   = new CondimentoPicante("mix provenzal", 3);
+        noPicante = new CondimentoNoPicante("mix provenzal", 3);
     }
 
     @Test
@@ -28,5 +28,10 @@ class CondimentoTest {
     @Test
     void costoCondimentoEsCero() {
         assertEquals(0.0, noPicante.getCostoEstimado());
+    }
+
+    @Test
+    void costoCondimentoPicanteEsCero() {
+        assertEquals(0.0, picante.getCostoEstimado());
     }
 }
